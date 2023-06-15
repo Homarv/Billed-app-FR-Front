@@ -62,31 +62,35 @@ describe("Given I am connected as an employee", () => {
   });
 
   describe("When I click on an icon eye", () => {
-    test("A modal should open with bill proof", () => {
+    test("A modal should open with bill proof", async () => { 
       const onNavigate = (pathname) => {
-        document.body.innerHTML = ROUTES({ pathname })
-      }
-      document.body.innerHTML = BillsUI({ data: bills })
-      $.fn.modal = jest.fn()
-
+        document.body.innerHTML = ROUTES({ pathname });
+      };
+      document.body.innerHTML = BillsUI({ data: bills });
+      $.fn.modal = jest.fn();
+  
       const bill = new Bills({
         document,
         onNavigate,
         mockStore,
         localStorage: window.localStorage,
-      })
-      
-      const iconEye = screen.getAllByTestId("icon-eye")
-      const handleClickIconEye = jest.fn((icon) => bill.handleClickIconEye(icon))
+      });
+  
+      const iconEye = screen.getAllByTestId("icon-eye");
+      const handleClickIconEye = jest.fn((icon) => bill.handleClickIconEye(icon));
       iconEye.forEach((icon) => {
-        icon.addEventListener('click', (e) => handleClickIconEye(icon))
-        userEvent.click(icon)
-      })
-      expect(handleClickIconEye).toHaveBeenCalled()
-      expect(screen.getAllByAltText("Justificatif")).toBeTruthy()
-    })
-  })
+        icon.addEventListener("click", (e) => handleClickIconEye(icon));
+        userEvent.click(icon);
+      });
+  
+      await waitFor(() => {
+        expect(handleClickIconEye).toHaveBeenCalled();
+        expect(screen.getByText("Justificatif")).toBeTruthy();
+      });
+    });
+  });
 })
+
 
 // test d'intégration GET
 
